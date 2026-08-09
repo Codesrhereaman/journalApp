@@ -19,7 +19,6 @@ logs/
 .vscode/
 
 # Maven
-.mvn/wrapper/maven-wrapper.jar
 
 # Tests
 src/test/
