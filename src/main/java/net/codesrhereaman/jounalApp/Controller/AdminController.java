@@ -1,5 +1,6 @@
 package net.codesrhereaman.jounalApp.Controller;
 
+import lombok.RequiredArgsConstructor;
 import net.codesrhereaman.jounalApp.JournalEntry.AdminCreateRequest;
 import net.codesrhereaman.jounalApp.JournalEntry.User;
 import net.codesrhereaman.jounalApp.services.UserService;
@@ -7,15 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
+
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
 
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
 
     @GetMapping("/all-users")
     public ResponseEntity<?> getAllUser() {

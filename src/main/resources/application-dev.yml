@@ -1,9 +1,0 @@
-server:
-      port: 8080
-
-#4 ways to configure the port
-      #using application.properties
-      #using application.yml
-      #using terminal
-      #using configuration edit
-      #using vm (java -Dserver.port=1111 -jar journalApp-0.0.1-SNAPSHOT.jar )

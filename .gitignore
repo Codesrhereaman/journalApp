@@ -1,35 +1,46 @@
-HELP.md
+# Build
 target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+build/
 
-### STS ###
-.apt_generated
+# Logs
+logs/
+*.log
+
+# Mac
+.DS_Store
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VS Code
+.vscode/
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# Tests
+src/test/
+
+# Configuration / secrets
+*.properties
+*.yml
+*.yaml
+src/main/resources/Logback.xml
+
+# STS / Eclipse
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
 .sts4-cache
-*.yml
-*.xml
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-/logs/*.log
 
-### NetBeans ###
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/
