@@ -1,8 +1,11 @@
 package net.codesrhereaman.jounalApp.Controller;
 
+import net.codesrhereaman.jounalApp.JournalEntry.GreetingResponse;
 import net.codesrhereaman.jounalApp.JournalEntry.User;
+import net.codesrhereaman.jounalApp.JournalEntry.WeatherResponse;
 import net.codesrhereaman.jounalApp.Repository.UserRepository;
 import net.codesrhereaman.jounalApp.services.UserService;
+import net.codesrhereaman.jounalApp.services.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +18,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")   //gives a path to a class
 public class UserController {
 
-    @GetMapping
-    public String ok(){
-        return "alright";
-    }
+//    @GetMapping
+//    public String ok(){
+//        return "alright";
+//    }
 
     @Autowired
     private UserService userService;
@@ -26,6 +29,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private WeatherService weatherService;
 
     @PutMapping
     public ResponseEntity<?> modifyUser(@RequestBody User user){
@@ -38,14 +44,16 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-//    @GetMapping("/id")  //myid is a pth variable
-//    public ResponseEntity<?> getUserById(@PathVariable ObjectId userid){
-//        Optional<User> userById = userService.getUserById(userid);
-//        if(userById.isPresent()){
-//            return new ResponseEntity<>(userById.get(), HttpStatus.OK);
-//        }
-//        return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-//    }
+    @GetMapping
+    public ResponseEntity<?> gretting(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        WeatherResponse weather = weatherService.weatherResponse("Noida");
+        if(weather!=null){
+            GreetingResponse greeting = new GreetingResponse(weather,"Hi "+ authentication.getName());
+            return  ResponseEntity.ok(greeting);
+        }
+        return  ResponseEntity.notFound().build();
+    }
 
     @DeleteMapping  //myid is a pth variable
     public ResponseEntity<?> deleteUserByUserName(){
