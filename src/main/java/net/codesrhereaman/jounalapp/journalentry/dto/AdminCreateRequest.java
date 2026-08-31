@@ -1,4 +1,4 @@
-package net.codesrhereaman.jounalApp.JournalEntry;
+package net.codesrhereaman.jounalapp.journalentry.dto;
 
 import lombok.*;
 

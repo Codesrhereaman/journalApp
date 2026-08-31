@@ -1,7 +1,10 @@
-package net.codesrhereaman.jounalApp.services;
+package net.codesrhereaman.jounalapp.services;
 
-import net.codesrhereaman.jounalApp.JournalEntry.User;
-import net.codesrhereaman.jounalApp.Repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
+import net.codesrhereaman.jounalapp.constants.UserRoles;
+import net.codesrhereaman.jounalapp.journalentry.User;
+import net.codesrhereaman.jounalapp.journalentry.dto.UserRequest;
+import net.codesrhereaman.jounalapp.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class UserService {
 
@@ -25,10 +29,13 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void saveNewUser(User user) {
+    public void saveNewUser(UserRequest request) {
         try {
+            User user = new User();
+            user.setUserName(request.userName());
+            user.setEmail(request.email());
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setUserRoles(List.of("USER"));
+            user.setUserRoles(List.of(UserRoles.roles.USER.name()));
             userRepository.save(user);
         }catch (Exception e){
             System.out.println(e);
@@ -39,25 +46,21 @@ public class UserService {
     public void saveNewAdmin(User user) {
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setUserRoles(Arrays.asList("ADMIN","USER"));
+            user.setUserRoles(Arrays.asList(UserRoles.roles.USER.name(),UserRoles.roles.ADMIN.name()));
             userRepository.save(user);
         }catch (Exception e){
-            System.out.println(e);
-            System.out.println(Arrays.toString(e.getStackTrace()));
+            log.error("Cannot find user");
         }
     }
 
-    public boolean saveNewUserForTestOnly(User user) {
+    public boolean saveExistingUser(User user) {
         try {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setUserRoles(List.of("USER"));
             userRepository.save(user);
             return true;
         }catch (Exception e){
-            System.out.println(e);
-            System.out.println(Arrays.toString(e.getStackTrace()));
-            return false;
+            log.error("Cannot find user");
         }
+        return false;
     }
 
     public List<User> seeAllUsers() {

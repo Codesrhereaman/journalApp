@@ -1,16 +1,17 @@
-package net.codesrhereaman.jounalApp.Controller;
+package net.codesrhereaman.jounalapp.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.codesrhereaman.jounalApp.JournalEntry.AdminCreateRequest;
-import net.codesrhereaman.jounalApp.JournalEntry.User;
-import net.codesrhereaman.jounalApp.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import net.codesrhereaman.jounalapp.cache.AppCache;
+import net.codesrhereaman.jounalapp.journalentry.dto.AdminCreateRequest;
+import net.codesrhereaman.jounalapp.journalentry.User;
+import net.codesrhereaman.jounalapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin")
@@ -18,6 +19,8 @@ public class AdminController {
 
 
     private final UserService userService;
+
+    private final AppCache appCache;
 
     @GetMapping("/all-users")
     public ResponseEntity<?> getAllUser() {
@@ -40,4 +43,15 @@ public class AdminController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("clear-app-cache")
+    public void clearAppCache() {
+        try {
+            appCache.init();
+            log.warn("app cache cleared");
+        }catch (Exception e){
+            log.error("can't clear cache");
+        }
+    }
+
 }

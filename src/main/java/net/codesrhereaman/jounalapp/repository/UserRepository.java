@@ -1,6 +1,6 @@
-package net.codesrhereaman.jounalApp.Repository;
+package net.codesrhereaman.jounalapp.repository;
 
-import net.codesrhereaman.jounalApp.JournalEntry.User;
+import net.codesrhereaman.jounalapp.journalentry.User;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 

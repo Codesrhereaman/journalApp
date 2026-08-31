@@ -1,20 +1,29 @@
-package net.codesrhereaman.jounalApp.Config;
+package net.codesrhereaman.jounalapp.config;
 
-import net.codesrhereaman.jounalApp.services.UserDetailsServiceImpl;
+import lombok.RequiredArgsConstructor;
+import net.codesrhereaman.jounalapp.filter.JwtFilter;
+import net.codesrhereaman.jounalapp.services.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SpringSecurity {
+
+    private final JwtFilter jwtFilter;
 
 
     @Bean
@@ -29,8 +38,8 @@ public class SpringSecurity {
                             .requestMatchers("/journal/**", "/user/**").authenticated()
                             .requestMatchers("/admin/**").hasRole("ADMIN")
                             .anyRequest().permitAll())
-                    .httpBasic(Customizer.withDefaults()
-                    );
+            ;
+            http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         } catch (Exception e) {
             System.out.println(e.toString());
@@ -46,9 +55,10 @@ public class SpringSecurity {
         return new BCryptPasswordEncoder();
     }
 
+
     @Bean
-    public UserDetailsService userDetailsService() {
-        return new UserDetailsServiceImpl();
+    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration config) throws Exception{
+        return config.getAuthenticationManager();
     }
 
 }

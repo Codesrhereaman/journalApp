@@ -1,9 +1,9 @@
-package net.codesrhereaman.jounalApp.services;
+package net.codesrhereaman.jounalapp.services;
 
 import lombok.extern.slf4j.Slf4j;
-import net.codesrhereaman.jounalApp.JournalEntry.JournalEntry;
-import net.codesrhereaman.jounalApp.JournalEntry.User;
-import net.codesrhereaman.jounalApp.Repository.JournalEntryRepository;
+import net.codesrhereaman.jounalapp.journalentry.JournalEntry;
+import net.codesrhereaman.jounalapp.journalentry.User;
+import net.codesrhereaman.jounalapp.repository.JournalEntryRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;

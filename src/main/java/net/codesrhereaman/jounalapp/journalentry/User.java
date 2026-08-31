@@ -1,4 +1,4 @@
-package net.codesrhereaman.jounalApp.JournalEntry;
+package net.codesrhereaman.jounalapp.journalentry;
 
 import lombok.*;
 import org.bson.types.ObjectId;
@@ -29,6 +29,11 @@ public class User {
     @Indexed(unique = true)  //it will not directly be indexed when a new user created hence we have to explicitly tell it in app properties
     @NonNull
     private String userName;
+
+    private String email;
+
+    private Boolean sentimentalAnalysis;
+
     @NonNull
     private String password;
     @DBRef

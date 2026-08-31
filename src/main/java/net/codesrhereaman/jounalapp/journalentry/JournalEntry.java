@@ -1,13 +1,13 @@
-package net.codesrhereaman.jounalApp.JournalEntry;
+package net.codesrhereaman.jounalapp.journalentry;
 
 import lombok.*;
+import net.codesrhereaman.jounalapp.enums.Sentiments;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 //using lombok annotation are used to create getter and setter during compile time
 //@Getter
@@ -27,5 +27,7 @@ public class JournalEntry {
     private String content;
 
     private LocalDateTime date;
+
+    private Sentiments sentiment;
 
 }

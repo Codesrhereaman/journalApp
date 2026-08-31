@@ -1,9 +1,11 @@
-package net.codesrhereaman.jounalApp.Controller;
+package net.codesrhereaman.jounalapp.controller;
 
-import net.codesrhereaman.jounalApp.JournalEntry.JournalEntry;
-import net.codesrhereaman.jounalApp.JournalEntry.User;
-import net.codesrhereaman.jounalApp.services.JournalEntryService;
-import net.codesrhereaman.jounalApp.services.UserService;
+import lombok.extern.slf4j.Slf4j;
+import net.codesrhereaman.jounalapp.journalentry.JournalEntry;
+import net.codesrhereaman.jounalapp.journalentry.User;
+import net.codesrhereaman.jounalapp.journalentry.dto.JournalEntryDTO;
+import net.codesrhereaman.jounalapp.services.JournalEntryService;
+import net.codesrhereaman.jounalapp.services.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 
 
 @RestController
+@Slf4j
 @RequestMapping("/journal")   //gives a path to a class
 public class JournalEntryControllerV2 {
     //all methods inside post mapping must be  public
@@ -38,6 +41,7 @@ public class JournalEntryControllerV2 {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
 
     @PostMapping
     public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry entry) {
@@ -84,7 +88,8 @@ public class JournalEntryControllerV2 {
     @PutMapping("/{id}")  //myid is a pth variable
     public ResponseEntity<?> modifyJournalById(
             @PathVariable ObjectId id,
-            @RequestBody JournalEntry newEntry) {
+            @RequestBody JournalEntryDTO newEntry) {
+        try{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUserName(authentication.getName());
         List<JournalEntry> collect = user.getJournalEntries().stream().filter(x -> x.getId().equals(id)).collect(Collectors.toList());
@@ -93,10 +98,17 @@ public class JournalEntryControllerV2 {
             if (old != null) {
                 old.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().equals("") ? newEntry.getTitle() : old.getTitle());
                 old.setContent(newEntry.getContent() != null && !newEntry.getContent().equals("") ? newEntry.getContent() : old.getContent());
+                old.setSentiment(newEntry.getSentiment() != null ? newEntry.getSentiment() : old.getSentiment());
+
                 journalEntryService.saveEntry(old, authentication.getName());
                 return new ResponseEntity<>(old, HttpStatus.OK);
             }
         }
+        } catch (Exception e) {
+            log.info("problem occurred while modifying entry");
+            log.error(e.toString());
+        }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
     }
 }

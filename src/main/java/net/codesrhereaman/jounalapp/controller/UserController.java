@@ -1,11 +1,12 @@
-package net.codesrhereaman.jounalApp.Controller;
+package net.codesrhereaman.jounalapp.controller;
 
-import net.codesrhereaman.jounalApp.JournalEntry.GreetingResponse;
-import net.codesrhereaman.jounalApp.JournalEntry.User;
-import net.codesrhereaman.jounalApp.JournalEntry.WeatherResponse;
-import net.codesrhereaman.jounalApp.Repository.UserRepository;
-import net.codesrhereaman.jounalApp.services.UserService;
-import net.codesrhereaman.jounalApp.services.WeatherService;
+import net.codesrhereaman.jounalapp.journalentry.dto.GreetingResponse;
+import net.codesrhereaman.jounalapp.journalentry.User;
+import net.codesrhereaman.jounalapp.journalentry.WeatherResponse;
+import net.codesrhereaman.jounalapp.journalentry.dto.UserRequest;
+import net.codesrhereaman.jounalapp.repository.UserRepository;
+import net.codesrhereaman.jounalapp.services.UserService;
+import net.codesrhereaman.jounalapp.services.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,14 +34,35 @@ public class UserController {
     @Autowired
     private WeatherService weatherService;
 
+
     @PutMapping
-    public ResponseEntity<?> modifyUser(@RequestBody User user){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<?> modifyUser(@RequestBody UserRequest user){
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
         String name = authentication.getName();
+
         User old = userService.findByUserName(name);
-        old.setUserName( user.getUserName() );
-        old.setPassword(user.getPassword());
-        userService.saveNewUser(old);
+
+        if (user.userName() != null) {
+            old.setUserName(user.userName());
+        }
+
+        if (user.password() != null) {
+            old.setPassword(user.password());
+        }
+
+        if (user.email() != null) {
+            old.setEmail(user.email());
+        }
+
+        if (user.sentimentalAnalysis() != null) {
+            old.setSentimentalAnalysis(user.sentimentalAnalysis());
+        }
+
+
+        userService.saveExistingUser(old);
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -62,6 +84,8 @@ public class UserController {
         User user = userRepository.deleteByUserName(name);
         return new ResponseEntity<>(user,HttpStatus.OK);
     }
+
+
 
 
 }

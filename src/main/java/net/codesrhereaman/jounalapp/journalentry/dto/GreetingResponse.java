@@ -1,8 +1,8 @@
-package net.codesrhereaman.jounalApp.JournalEntry;
+package net.codesrhereaman.jounalapp.journalentry.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import net.codesrhereaman.jounalapp.journalentry.WeatherResponse;
 
 @Getter
 @AllArgsConstructor
