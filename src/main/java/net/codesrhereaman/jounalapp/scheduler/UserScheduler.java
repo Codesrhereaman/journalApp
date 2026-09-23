@@ -7,8 +7,10 @@ import net.codesrhereaman.jounalapp.cache.AppCache;
 import net.codesrhereaman.jounalapp.enums.Sentiments;
 import net.codesrhereaman.jounalapp.journalentry.JournalEntry;
 import net.codesrhereaman.jounalapp.journalentry.User;
+import net.codesrhereaman.jounalapp.model.SentimentData;
 import net.codesrhereaman.jounalapp.repository.UserRepositoryQueries;
 import net.codesrhereaman.jounalapp.services.EmailSenderService;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -32,9 +34,11 @@ public class UserScheduler {
 
     private final AppCache appCache;
 
+    private final KafkaTemplate<String,SentimentData> kafkaTemplate;
+
 
     //cron is used to create scheduling in java with some format like this
-    @Scheduled(cron = "0 * 0 * * SUN,Thu")
+    @Scheduled(cron = "0 */5 * * * SUN")
     public void fetchAndSendSAEmail(){
         List<User> users = userRepositoryQueries.getUsersWithSA();
         for(User user : users){
@@ -57,7 +61,12 @@ public class UserScheduler {
 
             if(mostFrequentSentiment!=null){
                 log.info(mostFrequentSentiment.toString());
-                emailSenderService.sendEmail(user.getEmail(),"Sentiments for you upto last 7 days",mostFrequentSentiment.toString());
+                SentimentData sentimentData = SentimentData.builder().email(user.getEmail()).sentiment("Sentiments for you upto last 7 days"+ mostFrequentSentiment.toString()).build();
+                try{
+                    kafkaTemplate.send("weekly-assignment",sentimentData.getEmail(),sentimentData);
+                } catch (Exception e) {
+                    emailSenderService.sendEmail(sentimentData.getEmail(), "Sentiment for previous week", sentimentData.getSentiment());
+                }
             }
         }
     }

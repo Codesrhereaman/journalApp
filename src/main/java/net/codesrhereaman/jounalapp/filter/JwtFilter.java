@@ -48,7 +48,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 log.error("token is expired");
             }
         }
-        response.addHeader("admin","sharma ji");
         chain.doFilter(request, response);
 
     }
