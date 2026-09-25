@@ -1,5 +1,6 @@
 package net.codesrhereaman.jounalapp.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.codesrhereaman.jounalapp.cache.AppCache;
@@ -15,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin")
+@Tag(name = "Admin API's")
 public class AdminController {
 
 

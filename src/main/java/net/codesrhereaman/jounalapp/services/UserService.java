@@ -3,7 +3,7 @@ package net.codesrhereaman.jounalapp.services;
 import lombok.extern.slf4j.Slf4j;
 import net.codesrhereaman.jounalapp.constants.UserRoles;
 import net.codesrhereaman.jounalapp.journalentry.User;
-import net.codesrhereaman.jounalapp.journalentry.dto.UserRequest;
+import net.codesrhereaman.jounalapp.journalentry.dto.RegisterRequest;
 import net.codesrhereaman.jounalapp.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void saveNewUser(UserRequest request) {
+    public void saveNewUser(RegisterRequest request) {
         try {
             User user = new User();
             user.setUserName(request.userName());

@@ -1,9 +1,10 @@
 package net.codesrhereaman.jounalapp.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.codesrhereaman.jounalapp.journalentry.dto.GreetingResponse;
 import net.codesrhereaman.jounalapp.journalentry.User;
 import net.codesrhereaman.jounalapp.journalentry.WeatherResponse;
-import net.codesrhereaman.jounalapp.journalentry.dto.UserRequest;
+import net.codesrhereaman.jounalapp.journalentry.dto.RegisterRequest;
 import net.codesrhereaman.jounalapp.repository.UserRepository;
 import net.codesrhereaman.jounalapp.services.UserService;
 import net.codesrhereaman.jounalapp.services.WeatherService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 //this is POJO(plain old java object)
 @RestController
 @RequestMapping("/user")   //gives a path to a class
+@Tag(name = "User API's")
 public class UserController {
 
 //    @GetMapping
@@ -36,7 +38,7 @@ public class UserController {
 
 
     @PutMapping
-    public ResponseEntity<?> modifyUser(@RequestBody UserRequest user){
+    public ResponseEntity<?> modifyUser(@RequestBody RegisterRequest user){
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
 

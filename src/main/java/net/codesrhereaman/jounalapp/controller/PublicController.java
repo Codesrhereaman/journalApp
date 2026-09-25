@@ -1,13 +1,13 @@
 package net.codesrhereaman.jounalapp.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.codesrhereaman.jounalapp.journalentry.User;
-import net.codesrhereaman.jounalapp.journalentry.dto.UserRequest;
+import net.codesrhereaman.jounalapp.journalentry.dto.LoginRequest;
+import net.codesrhereaman.jounalapp.journalentry.dto.RegisterRequest;
 import net.codesrhereaman.jounalapp.services.UserDetailsServiceImpl;
 import net.codesrhereaman.jounalapp.services.UserService;
 import net.codesrhereaman.jounalapp.utils.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,12 +15,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/public")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Handles Public API's")
 public class PublicController {
 
 
@@ -32,14 +31,14 @@ public class PublicController {
 
     private final AuthenticationManager authenticationManager;
 
-    //health-check is important to check if the server is running and api will response
+    //health check is important to check if the server is running and api will response
     @GetMapping("/health-check")
     public String healthcheck(){
         return "Ok";
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserRequest request){
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request){
         try{
             userService.saveNewUser(request);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -49,7 +48,7 @@ public class PublicController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserRequest request){
+    public ResponseEntity<?> login(@RequestBody LoginRequest request){
         try{
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.userName(),request.password()));
             UserDetails userDetails = userDetailsService.loadUserByUsername(request.userName());

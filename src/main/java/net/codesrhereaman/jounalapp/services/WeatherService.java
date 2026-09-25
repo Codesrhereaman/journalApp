@@ -2,6 +2,7 @@ package net.codesrhereaman.jounalapp.services;
 
 import lombok.RequiredArgsConstructor;
 import net.codesrhereaman.jounalapp.cache.AppCache;
+import net.codesrhereaman.jounalapp.enums.Weather;
 import net.codesrhereaman.jounalapp.journalentry.WeatherResponse;
 import net.codesrhereaman.jounalapp.constants.Placeholders;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +30,7 @@ public class WeatherService {
 
 
     public  WeatherResponse weatherResponse(String city){
-        WeatherResponse weatherResponse = redisService.get("weather_of_" + city, WeatherResponse.class);
+        WeatherResponse weatherResponse = redisService.get(Weather.weather_of + city, WeatherResponse.class);
         if(weatherResponse != null){
             return weatherResponse;
         }else{
@@ -37,7 +38,7 @@ public class WeatherService {
             ResponseEntity<WeatherResponse> weather = restTemplate.exchange(finalApi, HttpMethod.GET, null, WeatherResponse.class);
             WeatherResponse body = weather.getBody();
             if(body != null){
-                redisService.set("weather_of_" + city,body,300);
+                redisService.set(Weather.weather_of + city,body,300);
             }
             return body;
         }

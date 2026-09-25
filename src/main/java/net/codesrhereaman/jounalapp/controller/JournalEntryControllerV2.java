@@ -1,5 +1,7 @@
 package net.codesrhereaman.jounalapp.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import net.codesrhereaman.jounalapp.journalentry.JournalEntry;
 import net.codesrhereaman.jounalapp.journalentry.User;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 @RequestMapping("/journal")   //gives a path to a class
+@Tag(name = "Journal Entries API's")
 public class JournalEntryControllerV2 {
     //all methods inside post mapping must be  public
 
@@ -32,6 +35,7 @@ public class JournalEntryControllerV2 {
     private UserService userService;
 
     @GetMapping
+    @Operation(summary = "get all the entries of the user")
     public ResponseEntity<?> getAllEntriesOfUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUserName(authentication.getName());
@@ -55,12 +59,13 @@ public class JournalEntryControllerV2 {
     }
 
     @GetMapping("id/{myid}")  //myid is a pth variable
-    public ResponseEntity<?> getJournalById(@PathVariable ObjectId myid) { //using ? give you return any kind of returnType
+    public ResponseEntity<?> getJournalById(@PathVariable String myid) { //using ? give you return any kind of returnType
+        ObjectId id = new ObjectId(myid);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUserName(authentication.getName());
-        List<JournalEntry> collect = user.getJournalEntries().stream().filter(x -> x.getId().equals(myid)).collect(Collectors.toList());
+        List<JournalEntry> collect = user.getJournalEntries().stream().filter(x -> x.getId().equals(id)).collect(Collectors.toList());
         if (!collect.isEmpty()) {
-            Optional<JournalEntry> entryById = journalEntryService.getEntryById(myid);
+            Optional<JournalEntry> entryById = journalEntryService.getEntryById(id);
             if (entryById.isPresent()) {
                 return new ResponseEntity<>(entryById.get(), HttpStatus.OK);
             }
@@ -69,13 +74,14 @@ public class JournalEntryControllerV2 {
     }
 
     @DeleteMapping("id/{myid}")  //myid is a pth variable
-    public ResponseEntity<?> deleteJournalById(@PathVariable ObjectId myid) {
+    public ResponseEntity<?> deleteJournalById(@PathVariable String myid) {
+        ObjectId id = new ObjectId(myid);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUserName(authentication.getName());
-        boolean isRemoved = user.getJournalEntries().removeIf(x -> x.getId().equals(myid));
+        boolean isRemoved = user.getJournalEntries().removeIf(x -> x.getId().equals(id));
         try {
             if (isRemoved) {
-                journalEntryService.deleteEntryById(user.getUserName(), myid);
+                journalEntryService.deleteEntryById(user.getUserName(), id);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         }catch (Exception e){
